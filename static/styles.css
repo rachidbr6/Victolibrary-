@@ -1,0 +1,145 @@
+/* ===========================
+   LOGIN PAGE
+=========================== */
+body.bg-login {
+    background: url("/static/log.jpg") no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Card login */
+body.bg-login .card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    padding: 20px;
+}
+
+/* Bouton login */
+body.bg-login .btn-primary {
+    background-color: #6a11cb;
+    border: none;
+}
+body.bg-login .btn-primary:hover {
+    background-color: #2575fc;
+}
+
+/* Titres login */
+body.bg-login h4 {
+    font-weight: 1200;
+    color: #333;
+    font-family: 'Crimson Text', serif;
+    color: #3e2f2f;
+}
+
+/* ===========================
+   REGISTER PAGE
+=========================== */
+body.bg-register {
+    background: url("/static/regflat.jpg") no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Card register */
+body.bg-register .card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    padding: 20px;
+}
+
+/* Bouton register */
+body.bg-register .btn-success {
+    background-color: #6a11cb;
+    border: none;
+}
+body.bg-register .btn-success:hover {
+    background-color: #2575fc;
+}
+
+/* Titres register */
+body.bg-register h4 {
+    font-weight: 700;
+    color: #f7eded;
+}
+body.bg-register h1 {
+    color: white;          
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* REGISTER PAGE FOOTER TEXT */
+body.bg-register .card-footer {
+    text-align: center;
+    color: white;       
+    margin-top: 15px;
+}
+
+body.bg-register .card-footer a {
+    color: white;       
+    text-decoration: underline;
+}
+
+body.bg-register .card-footer a:hover {
+    color: #ddd;        
+}
+
+/* ===========================
+   INDEX PAGE
+=========================== */
+
+h1, h4, label {
+    font-family: 'Cinzel Decorative', serif;
+    letter-spacing: 1px;
+}
+
+body, p, input, button, a {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.05rem;
+}
+
+/* Boutons victorian */
+.btn-victorian {
+    font-family: 'Cinzel Decorative', serif;
+    border: 2px solid #b78c4a;
+    background-color: transparent;
+    color: #b78c4a;
+    padding: 6px 18px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-victorian:hover {
+    background-color: #b78c4a;
+    color: white;
+}
+
+/* Effet victorien sur card */
+body.bg-login .card,
+body.bg-register .card {
+    border: 2px solid rgba(183, 140, 74, 0.7);
+    background-color: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(3px);
+}
+
+/* Titre plus orné */
+body.bg-login h4, body.bg-register h1 {
+    text-shadow: 1px 1px 2px rgba(183, 140, 74, 0.4);
+}
+
+/* Champs formulaire victorian */
+input.form-control {
+    border: 1px solid #b78c4a;
+    border-radius: 6px;
+}
+input.form-control:focus {
+    border-color: #a0723d;
+    box-shadow: 0 0 6px rgba(183, 140, 74, 0.5);
+}

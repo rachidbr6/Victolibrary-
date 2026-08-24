@@ -1,0 +1,191 @@
+/* styles1.css - pour index.html uniquement */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* Body et background */
+body.bg-index {
+  font-family: 'Crimson Text', serif;
+  color: #3e2f2f;
+  padding-bottom: 40px;
+
+  background: linear-gradient(to bottom, rgba(245,240,225,0.7), rgba(224,213,193,0.7)), 
+              url('/static/main.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Titre principal */
+body.bg-index h1 {
+  font-family: 'Cinzel Decorative', cursive;
+  color: #5b3b3b;
+  font-size: 3rem;
+  border-bottom: 3px double #a67c52;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Bouton de déconnexion */
+body.bg-index .btn-logout {
+  background-color: #8c2f2f;
+  border-color: #5e1d1d;
+  color: white;
+  font-weight: bold;
+}
+
+body.bg-index .btn-logout:hover {
+  opacity: 0.9;
+}
+
+/* Cartes */
+body.bg-index .card {
+  background-color: #fef9f1; 
+  border: 2px solid #b29476;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(108, 80, 60, 0.15);
+}
+
+/* Card header */
+body.bg-index .card-header {
+  background-color: #d6c3aa;
+  color: #3e2f2f;
+  font-weight: bold;
+  font-family: 'Cinzel Decorative', cursive;
+  border-bottom: 1px solid #a67c52;
+}
+
+/* Inputs et selects */
+body.bg-index .form-control,
+body.bg-index .form-select {
+  border: 1px solid #a67c52;
+  background-color: #fffaf3;
+  color: #3e2f2f;
+}
+
+/* Boutons */
+body.bg-index .btn-primary {
+  background-color: #7b4b32;
+  border-color: #5a3624;
+}
+
+body.bg-index .btn-success {
+  background-color: #4e6b40;
+  border-color: #3b5030;
+}
+
+body.bg-index .btn-danger {
+  background-color: #8c2f2f;
+  border-color: #5e1d1d;
+}
+
+body.bg-index .btn-secondary {
+  background-color: #736357;
+  border-color: #554b3f;
+}
+
+/* Tableaux */
+body.bg-index .table {
+  border: 1px solid #a67c52;
+}
+
+body.bg-index .table th,
+body.bg-index .table td {
+  border-color: #c2a481;
+  text-align: center;
+  vertical-align: middle;
+}
+
+body.bg-index .table thead {
+  background-color: #ede3d3;
+  font-family: 'Cinzel Decorative', cursive;
+}
+
+/* Modal PDF */
+body.bg-index .modal-content {
+  background-color: #fdfaf6;
+  border: 2px solid #bda98a;
+}
+
+body.bg-index .modal-header {
+  background-color: #e8ddcb;
+  border-bottom: 1px solid #bda98a;
+}
+
+body.bg-index .modal-footer {
+  background-color: #f3ece1;
+  border-top: 1px solid #bda98a;
+}
+
+/* Canvas PDF */
+body.bg-index #pdfCanvas {
+  border: 1px solid #a67c52;
+  box-shadow: 0 0 10px rgba(100, 80, 60, 0.2);
+  margin-bottom: 20px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0e6d6;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #a67c52;
+  border-radius: 10px;
+  border: 2px solid #f0e6d6;
+}
+#readerModal .modal-dialog {
+    max-width: 95%;
+    height: 90vh;
+    margin: auto;
+}
+
+#readerModal .modal-content {
+    height: 100%;
+}
+#readerModal .modal-body {
+    height: calc(100% - 120px);
+    padding: 0;
+    overflow: hidden; 
+}
+
+#pdfContainer {
+    width: 100%;
+    height: 100%;
+    overflow: auto; 
+    display: flex;
+    justify-content: center; 
+    align-items: flex-start; 
+}
+
+
+
+
+
+
+/* Empêcher Bootstrap de bloquer le scroll dans la modal */
+.modal-open {
+    overflow: visible !important;
+}
+
+
+#pdfCanvas {
+    display: inline-block; 
+    max-width: none; 
+}
+
+/* Bouton actualiser */
+body.bg-index .btn-refresh {
+  background-color: #a67c52;
+  border-color: #8c6b42;
+  color: white;
+  font-family: 'Cinzel Decorative', cursive;
+  font-weight: bold;
+}
+
+body.bg-index .btn-refresh:hover {
+  background-color: #8c6b42;
+  border-color: #6b4e30;
+}
