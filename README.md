@@ -1,140 +1,159 @@
-VictoryLibrary
+# VictoLibrary
+
+A personal library manager with a Victorian reading-room aesthetic — track your books, pick up reading where you left off, and use it as a website or as a native desktop app.
+
 #### Video Demo: https://youtu.be/ODeW2yje4jE
-#### GitHub: rachidbr6 /https://github.com/rachidbr6
-#### edX: rachidbr666 /https://profile.edx.org/u/rachidbr666
-#### Location: [rabat,Morocco]
-#### Date: [16/08/2025]
-Description:
+#### GitHub: [rachidbr6](https://github.com/rachidbr6)
+#### edX: [rachidbr666](https://profile.edx.org/u/rachidbr666)
+#### Location: Rabat, Morocco
+#### Date: August 16, 2025
 
-VictoryLibrary is a library management application that can be used both as a web application and as a standalone desktop program.
-It allows users to organize their personal collection of books, track their reading progress, and manage their account through a simple and intuitive interface.
+## Screenshots
 
-The application combines a Flask backend with a MySQL database, and it can be run in a browser or as a desktop app through PyWebview.
+| Login | Library dashboard |
+|---|---|
+| ![Login screen](static/screenshots/login.png) | ![Library dashboard](static/screenshots/dashboard.png) |
 
-Features
+## Description
 
-Book Management
+VictoLibrary is a library management application that can be used both as a web application and as a standalone desktop program. It lets you organize your personal book collection, track reading progress page by page, and manage your account through a simple, elegant interface.
 
-Add new books by providing the title, author, and total number of pages
+The application combines a Flask backend with a MySQL database, and runs either in a browser or as a desktop app (via PyWebview) with its own window and icon.
 
-View all books in a structured table
+## Features
 
-Update current reading progress by saving the last page reached
+**Book management**
+- Add books manually (title, author, total pages) or pick them up automatically from PDFs dropped in `static/books/`
+- View your whole collection in a structured table
+- Update your current page to track reading progress
+- Mark books as favorites
+- Remove books you no longer need
 
-Remove books that are no longer needed
+**User accounts**
+- Register with a username and password
+- Passwords are hashed with Werkzeug's `generate_password_hash` / `check_password_hash`
+- Session-based login required before accessing the library
 
-User Accounts
+**Desktop integration**
+- Launch as a native window (no browser chrome) via PyWebview
+- Custom window icon and title
+- One-click launch from a desktop shortcut
 
-Register with email and password
+## Tech stack
 
-Secure login system before accessing the library
+| Layer | Technology |
+|---|---|
+| Backend | Flask (Python) |
+| Database | MySQL |
+| Frontend | HTML, CSS, Bootstrap 5 |
+| Desktop shell | PyWebview (WebView2 on Windows) |
 
-Desktop Integration
+## Project structure
 
-Run the application as a desktop program with its own icon
+```
+VictoLibrary/
+├── app.py                # Main Flask application (routes, logic, DB operations)
+├── launch_app.pyw        # Desktop launcher: starts the server and opens a native window
+├── run_desktop.py        # Alternative PyWebview launcher
+├── library.sql           # MySQL schema and seed data
+├── requirements.txt      # Python dependencies
+├── VictoLibrary.bat      # Windows launcher (runs launch_app.pyw silently)
+├── static/
+│   ├── books/             # Your PDF/EPUB books (not tracked in git)
+│   ├── screenshots/       # Images used in this README
+│   ├── logo.ico
+│   ├── styles.css
+│   └── styles1.css
+└── templates/
+    ├── index.html         # Main interface (book list, add/update/delete forms)
+    ├── login.html         # Login page
+    └── register.html      # Registration page
+```
 
-Build an executable version using PyInstaller
+## Getting started
 
-Technologies
+### 1. Clone the repository
 
-Frontend: HTML, CSS, Bootstrap 5
+```bash
+git clone https://github.com/rachidbr6/Victolibrary-.git
+cd Victolibrary-
+```
 
-Backend: Flask (Python)
+### 2. Install dependencies
 
-Database: MySQL
-
-Desktop Mode: PyWebview and PyInstaller
-
-File Structure
-VICTLORYLIBRARY
-│   app.py              # Main Flask application (routes, logic, DB operations)
-│   launch.py           # Runs the application in web mode
-│   library.sql         # MySQL schema for the database
-│   README.md           # Project documentation
-│   requirements.txt    # Python dependencies
-│   run_desktop.py      # PyWebview launcher for desktop mode
-│
-├───static
-│   ├───books           # (Optional) Storage for book-related files
-│   ├───log.jpg
-│   ├───logo.ico
-│   ├───main.jpg
-│   ├───regflat.jpg
-│   ├───styles.css
-│   └───styles1.css
-│
-└───templates
-    │   index.html      # Main interface (book list, add/update/delete forms)
-    │   login.html      # Login page
-    │   register.html   # Registration page
-
-Database Schema
-
-The main table for storing books is defined as follows:
-
-id – INT, primary key, auto-increment
-
-title – VARCHAR, required
-
-author – VARCHAR, optional
-
-total_pages – INT, optional
-
-current_page – INT, default 0
-
-Design Decisions
-
-Flask was selected for its simplicity and ease of integration with Python.
-
-MySQL was chosen over SQLite to allow better scalability and stability.
-
-Bootstrap 5 provides a clean and responsive design.
-
-PyWebview was integrated so the application can run as a native desktop app, improving accessibility and user experience.
-
-Aesthetic Choice: Victorian Vibe
-
-VictoryLibrary is not only a functional project but also a reflection of a personal inspiration.
-The application design is influenced by the Victorian era aesthetic—an atmosphere of refinement, elegance, and timeless passion for literature.
-This stylistic choice aims to recreate the feeling of an old reading room, blending modern technology with a classical library vibe.
-
-How to Run
-
-Clone the repository:
-
-git clone https://github.com/your-username/VICTLORYLIBRARY.git
-cd VICTLORYLIBRARY
-
-
-Install dependencies:
-
+```bash
 pip install -r requirements.txt
+```
 
+### 3. Set up the database
 
-Import the database schema:
+Start a local MySQL server (default connection used by the app: `host=localhost`, `user=root`, no password), then create the database and load the schema:
 
-mysql -u your_user -p your_db < library.sql
+```bash
+mysql -u root -e "CREATE DATABASE library CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
+mysql -u root library < library.sql
+```
 
+If you'd rather start from an empty library, you can skip `library.sql` — `app.py` creates the required tables automatically on first run.
 
-Run in web mode:
+### 4. Add your books (optional)
 
-python launch.py
+Drop PDF files into `static/books/` — they'll appear in the "available books" dropdown so you can add them to your library with one click.
 
+### 5. Run it
 
-Open http://127.0.0.1:5000 in your browser.
+**As a website**
 
-Run in desktop mode:
+```bash
+python app.py
+```
 
-python run_desktop.py
+Then open http://127.0.0.1:5000 in your browser.
 
-Future Improvements
+**As a desktop app**
 
-Add support for book cover uploads
+```bash
+python launch_app.pyw
+```
 
-Enable file uploads for digital books (PDF/EPUB)
+This starts the Flask server in the background (if it isn't already running) and opens VictoLibrary in its own native window. On Windows, double-click `VictoLibrary.bat` — or the desktop shortcut, if you've created one — to do the same silently.
 
-Introduce categories or tags for organizing collections
+## Database schema
 
-Add reading statistics and history tracking
+**books**
 
-Extend multi-user functionality with separate libraries
+| Column | Type | Notes |
+|---|---|---|
+| id | INT | Primary key, auto-increment |
+| title | VARCHAR(255) | Required |
+| author | VARCHAR(255) | Optional |
+| total_pages | INT | Optional |
+| current_page | INT | Default 1 |
+| is_favorite | BOOLEAN | Default false |
+
+**users**
+
+| Column | Type | Notes |
+|---|---|---|
+| id | INT | Primary key, auto-increment |
+| username | VARCHAR(50) | Unique, required |
+| password | VARCHAR(255) | Hashed, required |
+
+## Design decisions
+
+- **Flask** was chosen for its simplicity and tight integration with Python.
+- **MySQL** was chosen over SQLite for better scalability and stability as the collection grows.
+- **Bootstrap 5** provides a clean, responsive layout without reinventing basic UI components.
+- **PyWebview** lets the same Flask app run as a native desktop app, improving accessibility without a separate frontend stack.
+
+### Aesthetic choice: Victorian vibe
+
+VictoLibrary is not only a functional project but also a reflection of a personal inspiration. Its design draws on the Victorian era — refinement, elegance, and a timeless passion for literature — to recreate the feeling of an old reading room while running on modern technology.
+
+## Future improvements
+
+- Book cover thumbnails
+- In-app PDF/EPUB reader instead of external viewers
+- Categories and tags for organizing collections
+- Reading statistics and history tracking
+- Multi-user libraries (separate collections per account)
