@@ -67,6 +67,38 @@
   </div>
 
   <div class="card mb-4">
+    <div class="card-header">📖 Rechercher dans le catalogue (couvertures, notes)</div>
+    <div class="card-body">
+      <div class="row g-2 align-items-center mb-3">
+        <div class="col-md-8">
+          <input type="text" id="catalogSearchInput" class="form-control" placeholder="Titre ou auteur">
+        </div>
+        <div class="col-md-4">
+          <button type="button" class="btn btn-primary w-100" onclick="searchCatalog()">Rechercher</button>
+        </div>
+      </div>
+      <div id="catalogSearchResults" class="d-flex flex-wrap gap-3"></div>
+      <small class="text-muted">Recherche dans un vaste catalogue (couvertures, notes). Métadonnées seulement — pas de fichier à lire, utile pour suivre des livres papier ou à trouver ailleurs.</small>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">🔎 Rechercher un livre en ligne</div>
+    <div class="card-body">
+      <div class="row g-2 align-items-center mb-3">
+        <div class="col-md-8">
+          <input type="text" id="onlineSearchInput" class="form-control" placeholder="Titre ou auteur (ex: Sherlock Holmes)">
+        </div>
+        <div class="col-md-4">
+          <button type="button" class="btn btn-primary w-100" onclick="searchBooks()">Rechercher</button>
+        </div>
+      </div>
+      <div id="onlineSearchResults"></div>
+      <small class="text-muted">Livres du domaine public uniquement. Convertis automatiquement en PDF pour être lus directement dans l'appli.</small>
+    </div>
+  </div>
+
+  <div class="card mb-4">
     <div class="card-header">➕ Ajouter un livre manuellement</div>
     <div class="card-body">
       <form method="POST" action="/add">
@@ -92,31 +124,25 @@
     <div class="card-header">📖 Ma bibliothèque</div>
     <div class="card-body">
       {% if books %}
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <thead class="table-light">
-            <tr>
-              <th>Titre</th>
-              <th>Dernière page lue</th>
-              <th>Lire</th>
-              <th>Supprimer</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for book in books %}
-            <tr>
-              <td>{{ book[1] }}</td>
-              <td id="last-page-{{ book[0] }}">{{ book[4] if book|length > 4 else 1 }}</td>
-              <td>
-                <button class="btn btn-sm btn-primary" onclick="openReader('{{ book[0] }}')">📖 Lire</button>
-              </td>
-              <td>
-                <a href="/delete/{{ book[0] }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ce livre ?')">🗑️</a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="d-flex flex-wrap gap-3">
+        {% for book in books %}
+        <div class="text-center" style="width:140px;">
+          {% if book|length > 5 and book[5] %}
+          <img src="{{ book[5] }}" alt="" style="width:100px;height:150px;object-fit:cover;" class="mb-1 border rounded">
+          {% else %}
+          <div class="mb-1 border rounded d-flex align-items-center justify-content-center text-muted mx-auto" style="width:100px;height:150px;">Pas d'image</div>
+          {% endif %}
+          <div style="font-size:0.8rem;"><strong>{{ book[1] }}</strong></div>
+          {% if book[2] %}
+          <div class="text-muted" style="font-size:0.75rem;">{{ book[2] }}</div>
+          {% endif %}
+          <div style="font-size:0.75rem;">Page <span id="last-page-{{ book[0] }}">{{ book[4] if book|length > 4 else 1 }}</span></div>
+          <div class="d-flex gap-1 justify-content-center mt-1">
+            <button class="btn btn-sm btn-primary" onclick="openReader('{{ book[0] }}')">📖 Lire</button>
+            <a href="/delete/{{ book[0] }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ce livre ?')">🗑️</a>
+          </div>
+        </div>
+        {% endfor %}
       </div>
       {% else %}
       <p class="text-muted">Aucun livre pour le moment.</p>
@@ -281,7 +307,16 @@ function openReader(bookId) {
     .then(res => res.json())
     .then(data => {
         if (!data.title) { alert("Livre non trouvé"); return; }
+        if (!data.has_file) {
+            alert("Aucun fichier disponible pour ce livre (ajouté depuis la recherche catalogue, sans téléchargement).");
+            return;
+        }
         const url = `/static/books/${encodeURIComponent(data.title)}`;
+
+        if (!data.title.toLowerCase().endsWith('.pdf')) {
+            window.open(url, '_blank');
+            return;
+        }
 
         pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
             pdfDoc = pdfDoc_;
@@ -359,6 +394,159 @@ document.addEventListener('DOMContentLoaded', function () {
                 location.reload();
             }, 300);
         });
+    }
+});
+
+function searchBooks() {
+    const input = document.getElementById('onlineSearchInput');
+    const query = input.value.trim();
+    const resultsDiv = document.getElementById('onlineSearchResults');
+    if (!query) return;
+
+    resultsDiv.innerHTML = '<p class="text-muted">Recherche...</p>';
+
+    fetch(`/search_books?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                resultsDiv.innerHTML = `<p class="text-danger">${data.error}</p>`;
+                return;
+            }
+            if (!data.results || data.results.length === 0) {
+                resultsDiv.innerHTML = '<p class="text-muted">Aucun résultat.</p>';
+                return;
+            }
+            resultsDiv.innerHTML = '';
+            data.results.forEach(book => {
+                const row = document.createElement('div');
+                row.className = 'd-flex justify-content-between align-items-center border-bottom py-2';
+                row.innerHTML = `
+                    <div>
+                        <strong>${book.title}</strong><br>
+                        <small class="text-muted">${book.author}</small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary">⬇️ Télécharger</button>
+                `;
+                row.querySelector('button').addEventListener('click', function () {
+                    downloadBook(book.download_url, book.title, book.author, this);
+                });
+                resultsDiv.appendChild(row);
+            });
+        })
+        .catch(() => {
+            resultsDiv.innerHTML = '<p class="text-danger">Erreur de recherche.</p>';
+        });
+}
+
+function downloadBook(url, title, author, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Téléchargement...';
+
+    fetch('/download_book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, title, author })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.error || "Échec du téléchargement");
+                btn.disabled = false;
+                btn.textContent = '⬇️ Télécharger';
+            }
+        })
+        .catch(() => {
+            alert("Erreur réseau");
+            btn.disabled = false;
+            btn.textContent = '⬇️ Télécharger';
+        });
+}
+
+document.getElementById('onlineSearchInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        searchBooks();
+    }
+});
+
+function searchCatalog() {
+    const input = document.getElementById('catalogSearchInput');
+    const query = input.value.trim();
+    const resultsDiv = document.getElementById('catalogSearchResults');
+    if (!query) return;
+
+    resultsDiv.innerHTML = '<p class="text-muted">Recherche...</p>';
+
+    fetch(`/search_catalog?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                resultsDiv.innerHTML = `<p class="text-danger">${data.error}</p>`;
+                return;
+            }
+            if (!data.results || data.results.length === 0) {
+                resultsDiv.innerHTML = '<p class="text-muted">Aucun résultat.</p>';
+                return;
+            }
+            resultsDiv.innerHTML = '';
+            data.results.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'text-center';
+                card.style.width = '140px';
+                const cover = book.image
+                    ? `<img src="${book.image}" alt="" style="width:100px;height:150px;object-fit:cover;" class="mb-1 border rounded">`
+                    : `<div class="mb-1 border rounded d-flex align-items-center justify-content-center text-muted" style="width:100px;height:150px;margin:0 auto;">Pas d'image</div>`;
+                const rating = book.rating ? `⭐ ${(book.rating * 5).toFixed(1)}/5` : '';
+                card.innerHTML = `
+                    ${cover}
+                    <div style="font-size:0.8rem;"><strong>${book.title}</strong></div>
+                    <div class="text-muted" style="font-size:0.75rem;">${book.author}</div>
+                    <div style="font-size:0.75rem;">${rating}</div>
+                    <button type="button" class="btn btn-sm btn-outline-success mt-1">+ Ajouter</button>
+                `;
+                card.querySelector('button').addEventListener('click', function () {
+                    addFromCatalog(book.title, book.author, book.image, this);
+                });
+                resultsDiv.appendChild(card);
+            });
+        })
+        .catch(() => {
+            resultsDiv.innerHTML = '<p class="text-danger">Erreur de recherche.</p>';
+        });
+}
+
+function addFromCatalog(title, author, image, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Ajout...';
+
+    fetch('/add_from_catalog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, author, image })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.error || "Échec de l'ajout");
+                btn.disabled = false;
+                btn.textContent = '+ Ajouter';
+            }
+        })
+        .catch(() => {
+            alert("Erreur réseau");
+            btn.disabled = false;
+            btn.textContent = '+ Ajouter';
+        });
+}
+
+document.getElementById('catalogSearchInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        searchCatalog();
     }
 });
 </script>
